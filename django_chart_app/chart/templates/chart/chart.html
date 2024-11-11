@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Chart</title>
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  </head>
+  <body>
+    <h1>D3 Chart</h1>
+    <div id="chart"></div>
+
+    <script>
+      fetch("/api/data/")
+        .then((response) => response.json())
+        .then((data) => {
+          const labels = data.labels;
+          const values = data.values;
+
+          const svg = d3
+            .select("#chart")
+            .append("svg")
+            .attr("width", 500)
+            .attr("height", 300);
+
+          svg
+            .selectAll("rect")
+            .data(values)
+            .enter()
+            .append("rect")
+            .attr("x", (d, i) => i * 80)
+            .attr("y", (d) => 300 - d * 5)
+            .attr("width", 50)
+            .attr("height", (d) => d * 5)
+            .attr("fill", "blue");
+
+          svg
+            .selectAll("text")
+            .data(labels)
+            .enter()
+            .append("text")
+            .text((d, i) => `${d}: ${values[i]}`)
+            .attr("x", (d, i) => i * 80 + 25)
+            .attr("y", 290)
+            .attr("text-anchor", "middle");
+        });
+    </script>
+  </body>
+</html>
